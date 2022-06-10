@@ -1,0 +1,32 @@
+.grid-container {
+    display: grid;
+    padding: 1%;
+    margin-top: 3%;
+    font-size: 1.5em;
+    color: #000;
+    background-color: #FFF;
+}
+
+.prop {
+    margin-top: 1%;
+    padding: .5%;
+}
+
+.content {
+    margin: 3% 0;
+    background-color: #FFF;
+    color: #000;
+}
+
+.bottom {
+    display: grid;
+    grid-template-columns: 20% 70% 10%;
+}
+
+.bottom .author {
+    grid-column: 1/2;
+}
+
+.bottom .date {
+    grid-column: 3/4;
+}

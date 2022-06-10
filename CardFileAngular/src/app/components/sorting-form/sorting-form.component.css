@@ -1,0 +1,43 @@
+.grid-container {
+    margin-top: 5%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    background-color: rgb(8, 161, 243);
+    color: #FFF;
+    padding: 1%;
+    row-gap: 1em;
+    column-gap: 1em;
+}
+
+.prop {
+    font-size: 1.2em;
+}
+
+.header {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-bottom: 2%;
+}
+
+.search-menu {
+    display: grid;
+}
+
+.search-menu>div {
+    display: grid;
+    grid-template-columns: 30% 70%;
+    margin: 1% 0;
+}
+
+.search-menu>div input {
+    height: 5vh;
+    padding: 1%;
+    border-radius: 5px;
+    border: none;
+}
+
+.apply-btn {
+    padding: 2%;
+    width: 100%;
+}

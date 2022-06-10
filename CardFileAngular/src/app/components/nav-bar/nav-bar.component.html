@@ -1,0 +1,12 @@
+<div class="container">
+    <div class="link main-page"><a routerLink="#" routerLinkActive>Main Page</a></div>
+    <div *ngIf="!userLoggedIn" class="link log-in">
+        <a routerLink="login" routerLinkActive>Log in</a>
+    </div>
+    <div *ngIf="!userLoggedIn" class="link sign-up">
+        <a routerLink="signup" routerLinkActive>Sign up</a>
+    </div>
+    <div *ngIf="userLoggedIn" class="link log-out">
+        <a (click)="onLogout()">Log out</a>
+    </div>
+</div>

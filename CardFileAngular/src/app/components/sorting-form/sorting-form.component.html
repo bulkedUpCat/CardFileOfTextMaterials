@@ -1,0 +1,30 @@
+<div class="grid-container">
+    <div class="prop sorting">
+        <p class="header">Sorting</p>
+    </div>
+    <div class="prop filtering">
+        <p class="header">Filtering</p>
+    </div>
+    <div class="prop searching">
+        <p class="header">Searching</p>
+        <div class="search-menu">
+            <div>
+                <label for="title">Title:</label>
+                <input id="title" type="text" [(ngModel)]="searchTitle" placeholder="Enter a title">
+            </div>
+            <div>
+                <label for="category">Category:</label>
+                <input id="category" type="text" [(ngModel)]="searchCategory" placeholder="Enter a category">
+            </div>
+        </div>
+    </div>
+    <div>
+        <button class="apply-btn">Apply</button>
+    </div>
+    <div>
+        <button class="apply-btn">Apply</button>
+    </div>
+    <div>
+        <button class="apply-btn" (click)="onSearch()">Apply</button>
+    </div>
+</div>
