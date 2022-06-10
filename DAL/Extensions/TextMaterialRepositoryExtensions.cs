@@ -30,5 +30,16 @@ namespace DAL.Extensions
             var lowerCaseTerm = searchCategory.Trim().ToLower();
             return textMaterials.Where(tm => tm.TextMaterialCategory.Title.ToLower().Contains(lowerCaseTerm));
         }
+
+        public static IQueryable<TextMaterial> SearchByAuthor(this IQueryable<TextMaterial> textMaterials, string searchAuthor)
+        {
+            if (string.IsNullOrEmpty(searchAuthor))
+            {
+                return textMaterials;
+            }
+
+            var lowerCaseTerm = searchAuthor.Trim().ToLower();
+            return textMaterials.Where(tm => tm.Author.UserName.ToLower().Contains(lowerCaseTerm));
+        }
     }
 }

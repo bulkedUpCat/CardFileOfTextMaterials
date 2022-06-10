@@ -41,6 +41,7 @@ namespace DAL.Repositories
                 .Include(tm => tm.TextMaterialCategory)
                 .SearchByTitle(parameters.SearchTitle)
                 .SearchByCategory(parameters.SearchCategory)
+                .SearchByAuthor(parameters.SearchAuthor)
                 .ToListAsync();
         }
 
