@@ -16,6 +16,9 @@ namespace Core.Models
         public string Title { get; set; }
         public string Content { get; set; }
 
+        public ApprovalStatus ApprovalStatus { get; set; } = ApprovalStatus.Pending;
+        public int RejectCount { get; set; }
+
         public TextMaterialCategory TextMaterialCategory { get; set; }
         public int TextMaterialCategoryId { get; set; }
 

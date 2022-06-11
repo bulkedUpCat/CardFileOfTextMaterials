@@ -57,7 +57,7 @@ namespace CardFile.Controllers
             catch (Exception e)
             {
                 _logger.LogInfo(e.Message);
-                return BadRequest(e.Message);
+                return Unauthorized(e.Message);
             }
         }
 

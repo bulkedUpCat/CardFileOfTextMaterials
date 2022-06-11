@@ -13,6 +13,8 @@ namespace DAL.Abstractions.Interfaces
         Task<IEnumerable<TextMaterial>> GetByCategory(TextMaterialCategory category);
         Task<IEnumerable<TextMaterial>> GetWithDetailsAsync();
         Task<IEnumerable<TextMaterial>> GetWithDetailsAsync(TextMaterialParameters parameters);
+        Task<IEnumerable<TextMaterial>> GetByUser(User user);
+        void Approve(TextMaterial textMaterial);
         Task<TextMaterial> GetByIdWithDetailsAsync(int id);
     }
 }

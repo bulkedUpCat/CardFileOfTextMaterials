@@ -34,26 +34,21 @@ namespace BLL.Services
 
             return PagedList<TextMaterialDTO>.ToPagedList(_mapper.Map<IEnumerable<TextMaterialDTO>>(textMaterials),parameters.PageNumber,parameters.PageSize);
         }
-
-        public async Task<IEnumerable<TextMaterialDTO>> GetTextMaterialsByCategory(TextMaterialCategoryDTO categoryDTO)
+        
+        public async Task<IEnumerable<TextMaterialDTO>> GetTextMaterialsOfUser(string id)
         {
-            if (categoryDTO == null)
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
             {
-                throw new CardFileException("categoryDTO was null");
+                throw new CardFileException($"Failed to find a user with id {id}");
             }
 
-            var category = await _unitOfWork.TextMaterialCategoryRepository.GetByTitleAsync(categoryDTO.Title);
-
-            if (category == null)
-            {
-                throw new CardFileException($"Category with title {categoryDTO.Title} doesn't exist");
-            }
-
-            var textMaterials = await _unitOfWork.TextMaterialRepository.GetByCategory(category);
+            var textMaterials = await _unitOfWork.TextMaterialRepository.GetByUser(user);
 
             if (textMaterials == null)
             {
-                throw new CardFileException($"No text materials of category {category.Title} were found");
+                throw new CardFileException($"No text materials of author with id {user.Id} were found");
             }
 
             return _mapper.Map<IEnumerable<TextMaterialDTO>>(textMaterials);
@@ -92,6 +87,37 @@ namespace BLL.Services
             }
 
             return _mapper.Map<TextMaterialDTO>(textMaterial);
+        }
+
+        public async Task UpdateTextMaterial(UpdateTextMaterialDTO textMaterialDTO)
+        {
+            var textMaterial = await _unitOfWork.TextMaterialRepository.GetByIdAsync(textMaterialDTO.Id);
+
+            if (textMaterial == null)
+            {
+                throw new CardFileException($"Failed to find a text material with id {textMaterialDTO.Id}");
+            }
+
+            try
+            {
+                //textMaterial = _mapper.Map<TextMaterial>(textMaterialDTO);
+                textMaterial.Title = textMaterialDTO.Title;
+                textMaterial.Content = textMaterialDTO.Content;
+                textMaterial.ApprovalStatus = (ApprovalStatus)textMaterialDTO.ApprovalStatusId;
+                textMaterial.DateLastChanged = DateTime.Now;
+
+                if (textMaterialDTO.ApprovalStatusId == 2)
+                {
+                    textMaterial.RejectCount++;
+                }
+
+                _unitOfWork.TextMaterialRepository.Update(textMaterial);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new CardFileException(ex.Message);
+            }
         }
     }
 }

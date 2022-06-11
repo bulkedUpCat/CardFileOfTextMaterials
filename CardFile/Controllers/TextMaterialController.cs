@@ -4,6 +4,7 @@ using CardFile.Logging;
 using Core.DTOs;
 using Core.Models;
 using Core.RequestFeatures;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -29,6 +30,7 @@ namespace CardFile.Controllers
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TextMaterialDTO>>> Get([FromQuery]TextMaterialParameters parameters)
+        
         {
             var textMaterials = await _textMaterialService.GetTextMaterials(parameters);
 
@@ -56,6 +58,21 @@ namespace CardFile.Controllers
             return Ok(textMaterial);
         }
 
+        [HttpGet("users/{id}", Name = "GetTextMaterialsByUserId")]
+        public async Task<ActionResult<IEnumerable<TextMaterialDTO>>> Get(string id)
+        {
+            try
+            {
+                var textMaterials = await _textMaterialService.GetTextMaterialsOfUser(id);
+
+                return Ok(textMaterials);
+            }
+            catch (CardFileException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateTextMaterialDTO textMaterialDTO)
         {
@@ -71,6 +88,22 @@ namespace CardFile.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody]UpdateTextMaterialDTO textMaterialDTO)
+        {
+            try
+            {
+                await _textMaterialService.UpdateTextMaterial(textMaterialDTO);
+                
+                return NoContent();
+            }
+            catch (CardFileException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
 
         [HttpGet("categories")]
         public async Task<IActionResult> GetCategories()

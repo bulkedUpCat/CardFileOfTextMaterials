@@ -15,6 +15,7 @@ namespace BLL.Dependencies
             services.AddScoped<TextMaterialService>();
             services.AddScoped<TextMaterialCategoryService>();
             services.AddScoped<UserService>();
+            services.AddScoped<RoleService>();
         }
     }
 }

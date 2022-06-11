@@ -18,6 +18,11 @@ import { UserSignupComponent } from './components/user-signup/user-signup.compon
 import { AddTextMaterialComponent } from './components/add-text-material/add-text-material.component';
 import { RichTextEditorModule } from '@syncfusion/ej2-angular-richtexteditor';
 import { TextMaterialDetailComponent } from './components/text-material-detail/text-material-detail.component';
+import { DatePipe } from '@angular/common';
+import { HomePageComponent } from './components/home-page/home-page.component';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './modules/material/material.module';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -32,6 +37,7 @@ import { TextMaterialDetailComponent } from './components/text-material-detail/t
     UserSignupComponent,
     AddTextMaterialComponent,
     TextMaterialDetailComponent,
+    HomePageComponent,
   ],
   imports: [
     BrowserModule,
@@ -40,9 +46,11 @@ import { TextMaterialDetailComponent } from './components/text-material-detail/t
     MyJwtModule,
     ReactiveFormsModule,
     RichTextEditorModule,
-    FormsModule
+    FormsModule,
+    NoopAnimationsModule,
+    MaterialModule,
   ],
-  providers: [MaterialCategoryService],
+  providers: [MaterialCategoryService,DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

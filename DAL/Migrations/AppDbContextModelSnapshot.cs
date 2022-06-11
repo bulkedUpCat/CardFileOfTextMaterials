@@ -30,6 +30,9 @@ namespace DAL.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("ApprovalStatus")
+                        .HasColumnType("int");
+
                     b.Property<string>("AuthorId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -46,6 +49,9 @@ namespace DAL.Migrations
 
                     b.Property<DateTime>("DatePublished")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("RejectCount")
+                        .HasColumnType("int");
 
                     b.Property<int>("TextMaterialCategoryId")
                         .HasColumnType("int");

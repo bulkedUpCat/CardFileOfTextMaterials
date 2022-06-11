@@ -44,7 +44,7 @@ namespace DAL.Repositories
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(TextMaterialCategory entity)
+        public void Update(TextMaterialCategory entity)
         {
             throw new NotImplementedException();
         }

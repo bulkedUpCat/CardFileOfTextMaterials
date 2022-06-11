@@ -16,7 +16,18 @@ export class AuthService {
 
   constructor(private http: HttpClient,
     private jwtHelper: JwtHelperService,
-    private router: Router) { }
+    private router: Router) {
+      const token = localStorage.getItem('TokenInfo');
+      let payload;
+
+      if (token && !this.jwtHelper.isTokenExpired(token)){
+        payload = token.split('.')[1];
+        payload = window.atob(payload);
+        payload = JSON.parse(payload);
+
+        this.claims.next(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
+      }
+     }
 
   get isLoggedIn(){
     const token = localStorage.getItem('TokenInfo');
@@ -55,6 +66,15 @@ export class AuthService {
       .pipe(tap(user => {
         if (user.token){
           localStorage.setItem("TokenInfo",user.token);
+
+          const token = localStorage.getItem('TokenInfo');
+          let payload;
+
+          payload = token.split('.')[1];
+          payload = window.atob(payload);
+          payload = JSON.parse(payload);
+          this.claims.next(payload['http://schemas.microsoft.com/ws/2008/06/identity/claims/role']);
+
           this.loggedIn.next(true);
         }
       }));

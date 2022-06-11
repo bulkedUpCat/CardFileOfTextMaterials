@@ -1,8 +1,8 @@
 .grid-container {
     display: grid;
     padding: 1%;
-    margin-top: 3%;
-    font-size: 1.5em;
+    margin-top: 11%;
+    font-size: 1.1em;
     color: #000;
     background-color: #FFF;
 }
@@ -10,6 +10,11 @@
 .prop {
     margin-top: 1%;
     padding: .5%;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
 }
 
 .content {
@@ -20,7 +25,7 @@
 
 .bottom {
     display: grid;
-    grid-template-columns: 20% 70% 10%;
+    grid-template-columns: 30% 40% 30%;
 }
 
 .bottom .author {
@@ -29,4 +34,32 @@
 
 .bottom .date {
     grid-column: 3/4;
+}
+
+.btn-approve {
+    text-align: center;
+}
+
+.btn-approve>button {
+    width: 40%;
+    padding: 0;
+    margin-right: 2%;
+    background-color: rgb(55, 55, 205);
+    color: #FFF;
+    font-size: 1.1em;
+    border: none;
+    cursor: pointer;
+}
+
+@media screen and (min-width: 601px) {
+    .grid-container {
+        margin-top: 3%;
+        font-size: 1.5em;
+    }
+    .bottom {
+        grid-template-columns: 20% 70% 10%;
+    }
+    .btn-approve>button {
+        padding: 1%;
+    }
 }

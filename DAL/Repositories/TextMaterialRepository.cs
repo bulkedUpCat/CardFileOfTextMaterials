@@ -39,9 +39,21 @@ namespace DAL.Repositories
             return await _context.TextMaterials
                 .Include(tm => tm.Author)
                 .Include(tm => tm.TextMaterialCategory)
+                .FilterByDatePublished(parameters.StartDate, parameters.EndDate)
                 .SearchByTitle(parameters.SearchTitle)
                 .SearchByCategory(parameters.SearchCategory)
                 .SearchByAuthor(parameters.SearchAuthor)
+                .SearchByUserId(parameters.UserId)
+                .FilterByApprovalStatus(parameters.ApprovalStatus)
+                .Sort(parameters.OrderBy)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<TextMaterial>> GetByUser(User user)
+        {
+            return await _context.TextMaterials
+                .Include(tm => tm.Author)
+                .Where(tm => tm.Author == user)
                 .ToListAsync();
         }
 
@@ -68,14 +80,19 @@ namespace DAL.Repositories
             return await _context.TextMaterials.Where(tm => tm.TextMaterialCategory == category).ToListAsync();
         }
 
+        public void Approve(TextMaterial textMaterial)
+        {
+            _context.Update(textMaterial);
+        }
+
         public Task DeleteEntity(TextMaterial entity)
         {
             throw new NotImplementedException();
         }
 
-        public Task UpdateAsync(TextMaterial entity)
+        public void Update(TextMaterial entity)
         {
-            throw new NotImplementedException();
+            _context.Update(entity);
         }
     }
 }
