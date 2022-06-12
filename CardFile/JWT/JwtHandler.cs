@@ -37,7 +37,7 @@ namespace CardFile.JWT
         {
             var claims = new List<Claim>()
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, user.Id)
             };
@@ -46,7 +46,7 @@ namespace CardFile.JWT
 
             foreach (var role in userRoles)
             {
-                claims.Add(new Claim(ClaimTypes.Role, role));
+                claims.Add(new Claim(ClaimsIdentity.DefaultRoleClaimType, role));
             }
 
             return claims;

@@ -7,6 +7,7 @@ import { MaterialCategory } from '../models/MaterialCategory';
 import { TextMaterial } from '../models/TextMaterial';
 import { TextMaterialParameters } from '../models/parameters/TextMaterialParameters';
 import { UpdateTextMaterial } from '../models/UpdateTextMaterial';
+import { EmailParameters } from '../models/parameters/EmailParameters';
 
 @Injectable({
   providedIn: 'root'
@@ -37,7 +38,7 @@ export class TextMaterialService {
   }
 
   getTextMaterialsByUserId(id: string) : Observable<TextMaterial[]>{
-    return this.http.get<TextMaterial[]>(`${environment.apiUrl}/textmaterials/users/` + id);
+    return this.http.get<TextMaterial[]>(`${environment.apiUrl}/users/${id}/textMaterials`);
   }
 
   getTextMaterialsByCategory(category: MaterialCategory) : Observable<TextMaterial[]>{
@@ -65,5 +66,26 @@ export class TextMaterialService {
 
   updateTextMaterial(textMaterial: UpdateTextMaterial){
     return this.http.put<number>(`${environment.apiUrl}/textMaterials`,textMaterial);
+  }
+
+  approveTextMaterial(id: number){
+    return this.http.post<number>(`${environment.apiUrl}/textMaterials/${id}/approve`,null)
+  }
+
+  rejectTextMaterial(id: number){
+    return this.http.post<number>(`${environment.apiUrl}/textMaterials/${id}/reject`,null);
+  }
+
+  sendTextMaterialAsPdf(textMaterialId: number, emailParams: EmailParameters){
+    var parameters = {};
+
+    if (emailParams.title) parameters['title'] = emailParams.title;
+    if (emailParams.category) parameters['category'] = emailParams.category;
+    if (emailParams.author) parameters['author'] = emailParams.author;
+    if (emailParams.datePublished) parameters['datePublished'] = emailParams.datePublished;
+
+    return this.http.get(`${environment.apiUrl}/textMaterials/${textMaterialId}/print`,{
+      params: parameters
+    });
   }
 }

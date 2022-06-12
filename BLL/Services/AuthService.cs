@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace BLL.Services
 {
-    public class UserService
+    public class AuthService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<User> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<User> _signInManager;
 
-        public UserService(IUnitOfWork unitOfWork,
+        public AuthService(IUnitOfWork unitOfWork,
             UserManager<User> userManager,
             SignInManager<User> signInManager,
             RoleManager<IdentityRole> roleIdentity)

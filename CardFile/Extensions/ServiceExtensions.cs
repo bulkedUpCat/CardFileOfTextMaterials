@@ -5,6 +5,7 @@ using CardFile.Logging;
 using Core.Models;
 using DAL.Contexts;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -75,6 +76,11 @@ namespace CardFile.Extensions
         public static void ConfigureJwt(this IServiceCollection services)
         {
             services.AddScoped<JwtHandler>();
+        }
+
+        public static void ConfigureHttpContextAccessor(this IServiceCollection services)
+        {
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         }
     }
 }

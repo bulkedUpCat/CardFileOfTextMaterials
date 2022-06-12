@@ -1,4 +1,6 @@
-﻿using BLL.Services;
+﻿using BLL.Abstractions.cs.Interfaces;
+using BLL.Email;
+using BLL.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -14,8 +16,10 @@ namespace BLL.Dependencies
         {
             services.AddScoped<TextMaterialService>();
             services.AddScoped<TextMaterialCategoryService>();
-            services.AddScoped<UserService>();
+            services.AddScoped<AuthService>();
             services.AddScoped<RoleService>();
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddScoped<EmailService>();
         }
     }
 }

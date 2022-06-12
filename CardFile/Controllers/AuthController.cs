@@ -16,11 +16,11 @@ namespace CardFile.Controllers
     [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly UserService _userService;
+        private readonly AuthService _userService;
         private readonly JwtHandler _jwtHandler;
         private readonly ILoggerManager _logger;
 
-        public AuthController(UserService userService,
+        public AuthController(AuthService userService,
             UserManager<User> userManager,
             JwtHandler jwtHandler,
             ILoggerManager logger)

@@ -1,6 +1,7 @@
 import { ThisReceiver } from '@angular/compiler';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { EmailParams } from 'src/app/models/parameters/EmailParameters';
 import { TextMaterial } from 'src/app/models/TextMaterial';
 import { AuthService } from 'src/app/services/auth.service';
 import { TextMaterialService } from 'src/app/services/text-material.service';
@@ -37,21 +38,39 @@ export class TextMaterialDetailComponent implements OnInit {
 
   approveTextMaterial(){
     this.textMaterial.approvalStatusId = 1;
-    this.textMaterialService.updateTextMaterial(this.textMaterial).subscribe(x => {
+    this.textMaterialService.approveTextMaterial(this.textMaterial.id).subscribe(x => {
       this.textMaterialService.getTextMaterialById(this.textMaterial.id).subscribe(tm => {
         this.textMaterial = tm;
         this.router.navigateByUrl('/main');
+      }, err => {
+        console.log(err);
       });
+    },err => {
+      console.log(err);
     });
   }
 
   rejectTextMaterial(){
     this.textMaterial.approvalStatusId = 2;
-    this.textMaterialService.updateTextMaterial(this.textMaterial).subscribe(x => {
+    this.textMaterialService.rejectTextMaterial(this.textMaterial.id).subscribe(x => {
       this.textMaterialService.getTextMaterialById(this.textMaterial.id).subscribe(tm => {
         this.textMaterial = tm;
         this.router.navigateByUrl('/main');
+      }, err => {
+        console.log(err);
       })
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  sendTextMaterialAsPdf(){
+    let emailParams = new EmailParams();
+    emailParams.title = true;
+    this.textMaterialService.sendTextMaterialAsPdf(this.textMaterial.id,emailParams).subscribe(tm => {
+      console.log(tm);
+    }, err => {
+      console.log(err);
     })
   }
 }

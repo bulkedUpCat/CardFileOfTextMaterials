@@ -33,9 +33,10 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureCors();
 builder.Services.ConfigureLoggerService();
 builder.Services.ConfigureAutoMapper();
+builder.Services.ConfigureJwt();
+builder.Services.ConfigureHttpContextAccessor();
 builder.Services.ConfigureDALServices();
 builder.Services.ConfigureBLLServices();
-builder.Services.ConfigureJwt();
 
 var app = builder.Build();
 

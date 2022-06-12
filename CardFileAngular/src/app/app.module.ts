@@ -23,6 +23,7 @@ import { HomePageComponent } from './components/home-page/home-page.component';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './modules/material/material.module';
 import { MatIconModule } from '@angular/material/icon';
+import { EmailPdfComponent } from './components/dialogs/email-pdf/email-pdf.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { MatIconModule } from '@angular/material/icon';
     AddTextMaterialComponent,
     TextMaterialDetailComponent,
     HomePageComponent,
+    EmailPdfComponent,
   ],
   imports: [
     BrowserModule,

@@ -18,14 +18,17 @@ namespace BLL.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly UserManager<User> _userManager;
+        private readonly EmailService _emailService;
 
         public TextMaterialService(IUnitOfWork unitOfWork, 
             IMapper mapper,
-            UserManager<User> userManager)
+            UserManager<User> userManager,
+            EmailService emailService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _userManager = userManager;
+            _emailService = emailService;
         }
 
         public async Task<IEnumerable<TextMaterialDTO>> GetTextMaterials(TextMaterialParameters parameters)
@@ -100,16 +103,9 @@ namespace BLL.Services
 
             try
             {
-                //textMaterial = _mapper.Map<TextMaterial>(textMaterialDTO);
                 textMaterial.Title = textMaterialDTO.Title;
                 textMaterial.Content = textMaterialDTO.Content;
-                textMaterial.ApprovalStatus = (ApprovalStatus)textMaterialDTO.ApprovalStatusId;
                 textMaterial.DateLastChanged = DateTime.Now;
-
-                if (textMaterialDTO.ApprovalStatusId == 2)
-                {
-                    textMaterial.RejectCount++;
-                }
 
                 _unitOfWork.TextMaterialRepository.Update(textMaterial);
                 await _unitOfWork.SaveChangesAsync();
@@ -117,6 +113,92 @@ namespace BLL.Services
             catch (Exception ex)
             {
                 throw new CardFileException(ex.Message);
+            }
+        }
+
+        public async Task ApproveTextMaterial(int textMaterialId)
+        {
+            var textMaterial = await _unitOfWork.TextMaterialRepository.GetByIdAsync(textMaterialId);
+
+            if (textMaterial == null)
+            {
+                throw new CardFileException($"Text material with id {textMaterialId} doesn't exist");
+            }
+
+            if (textMaterial.ApprovalStatus == ApprovalStatus.Approved)
+            {
+                throw new CardFileException($"Text material with id {textMaterialId} is already approved");
+            }
+
+            textMaterial.ApprovalStatus = ApprovalStatus.Approved;
+
+            try
+            {
+                _unitOfWork.TextMaterialRepository.Update(textMaterial);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new CardFileException(e.Message);
+            }
+        }
+
+        public async Task RejectTextMaterial(int textMaterialId)
+        {
+            var textMaterial = await _unitOfWork.TextMaterialRepository.GetByIdAsync(textMaterialId);
+
+            if (textMaterial == null)
+            {
+                throw new CardFileException($"Text material with id {textMaterialId} doesn't exist");
+            }
+
+            if (textMaterial.ApprovalStatus == ApprovalStatus.Rejected)
+            {
+                throw new CardFileException($"Text material with id {textMaterialId} is already rejected");
+            }
+
+            textMaterial.ApprovalStatus= ApprovalStatus.Rejected;
+            textMaterial.RejectCount++;
+
+            try
+            {
+                _unitOfWork.TextMaterialRepository.Update(textMaterial);
+                await _unitOfWork.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                throw new CardFileException(e.Message);
+            }
+        }
+
+        public async Task SendTextMaterialAsPdf(string userId, int textMaterialId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                throw new CardFileException("User id was not provided");
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                throw new CardFileException($"User with id {userId} doesn't exist");
+            }
+
+            var textMaterial = await _unitOfWork.TextMaterialRepository.GetByIdAsync(textMaterialId);
+
+            if (textMaterial == null)
+            {
+                throw new CardFileException($"Text material with id {textMaterialId} doesn't exist");
+            }
+
+            try
+            {
+                await _emailService.SendTextMaterialAsPdf(user, textMaterial);
+            }
+            catch (Exception e)
+            {
+                throw new CardFileException("Failed to send an email with pdf attached");
             }
         }
     }

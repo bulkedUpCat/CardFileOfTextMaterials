@@ -5,8 +5,10 @@ using Core.DTOs;
 using Core.Models;
 using Core.RequestFeatures;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace CardFile.Controllers
@@ -17,15 +19,15 @@ namespace CardFile.Controllers
     {
         private readonly TextMaterialService _textMaterialService;
         private readonly ILoggerManager _logger;
-        private readonly TextMaterialCategoryService _textMaterialCategoryService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public TextMaterialController(TextMaterialService textMaterialService,
-            TextMaterialCategoryService textMaterialCategoryService,
-            ILoggerManager logger)
+            ILoggerManager logger,
+            IHttpContextAccessor httpContextAccessor)
         {
             _textMaterialService = textMaterialService;
             _logger = logger;
-            _textMaterialCategoryService = textMaterialCategoryService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -58,21 +60,6 @@ namespace CardFile.Controllers
             return Ok(textMaterial);
         }
 
-        [HttpGet("users/{id}", Name = "GetTextMaterialsByUserId")]
-        public async Task<ActionResult<IEnumerable<TextMaterialDTO>>> Get(string id)
-        {
-            try
-            {
-                var textMaterials = await _textMaterialService.GetTextMaterialsOfUser(id);
-
-                return Ok(textMaterials);
-            }
-            catch (CardFileException e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
         [HttpPost]
         public async Task<IActionResult> Post([FromBody]CreateTextMaterialDTO textMaterialDTO)
         {
@@ -88,6 +75,56 @@ namespace CardFile.Controllers
                 return BadRequest(e.Message);
             }
         }
+        
+        [Authorize(AuthenticationSchemes = "Bearer")]
+        [HttpGet("{id}/print")]
+        public async Task<IActionResult> SendAsPdf(int id,[FromQuery] EmailParameters emailParams)
+        {
+            try
+            {
+                var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
+                await _textMaterialService.SendTextMaterialAsPdf(userId, id);
+
+                return Ok();
+            }
+            catch (CardFileException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+        [HttpPost("{id}/approve")]
+        public async Task<IActionResult> Approve(int id)
+        {
+            try
+            {
+                await _textMaterialService.ApproveTextMaterial(id);
+
+                return NoContent();
+            }
+            catch (CardFileException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Manager")]
+        [HttpPost("{id}/reject")]
+        public async Task<IActionResult> Reject(int id)
+        {
+            try
+            {
+                await _textMaterialService.RejectTextMaterial(id);
+
+                return NoContent();
+            }
+            catch (CardFileException e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [HttpPut]
         public async Task<IActionResult> Put([FromBody]UpdateTextMaterialDTO textMaterialDTO)
@@ -100,51 +137,6 @@ namespace CardFile.Controllers
             }
             catch (CardFileException e)
             {
-                return BadRequest(e.Message);
-            }
-        }
-
-
-        [HttpGet("categories")]
-        public async Task<IActionResult> GetCategories()
-        {
-            var categories = await _textMaterialCategoryService.GetTextMaterialCategoriesAsync();
-
-            if (categories == null)
-            {
-                _logger.LogInfo("No categories were found");
-                return NotFound("No categories were found");
-            }
-
-            return Ok(categories);
-        }
-
-        [HttpGet("categories/{id}", Name = "GetCategoryById")]
-        public async Task<IActionResult> GetCategory(int id)
-        {
-            var category = await _textMaterialCategoryService.GetTextMaterialCategoryById(id);
-
-            if (category == null)
-            {
-                _logger.LogInfo($"Failed to find a category with id {id}");
-                return NotFound($"Failed to find a category with id {id}");
-            }
-
-            return Ok(category);
-        }
-
-        [HttpPost("categories")]
-        public async Task<IActionResult> PostCategory(CreateTextMaterialCategoryDTO categoryDTO)
-        {
-            try
-            {
-                var category = await _textMaterialCategoryService.CreateTextMaterialCategoryAsync(categoryDTO);
-
-                return CreatedAtRoute("GetCategoryById", new { id = category.Id }, category);
-            }
-            catch (CardFileException e)
-            {
-                _logger.LogInfo($"Failed to create a category: {e.Message}");
                 return BadRequest(e.Message);
             }
         }
