@@ -1,11 +1,13 @@
 ﻿using BLL.Abstractions.cs.Interfaces;
 using BLL.Validation;
 using Core.Models;
+using Core.RequestFeatures;
 using DAL.Abstractions.Interfaces;
 using DAL.Data;
 using iText.Html2pdf;
 using iText.Kernel.Pdf;
 using iText.Layout;
+using iText.Layout.Element;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
@@ -32,14 +34,14 @@ namespace BLL.Services
             _emailSender = emailSender;
         }
 
-        public async Task SendTextMaterialAsPdf(User user, TextMaterial textMaterial)
+        public async Task SendTextMaterialAsPdf(User user, TextMaterial textMaterial, EmailParameters emailParams)
         {
             var stream = new MemoryStream();
             var writer = new PdfWriter(stream);
+            var pdfDocument = new PdfDocument(writer);
+            var pdf = CreateDocument(pdfDocument, textMaterial, emailParams);
 
-            var document = HtmlConverter.ConvertToDocument(textMaterial.Content, writer);
-
-            document.Close();
+            pdf.Close();
             MemoryStream pdfStream = new MemoryStream(stream.ToArray());
 
             try
@@ -47,8 +49,8 @@ namespace BLL.Services
                 _emailSender.SendSmtpMail(new EmailTemplate()
                 {
                     To = user.Email,
-                    Subject = "Movie Report",
-                    Body = "Here is your pdf report",
+                    Subject = "Text material",
+                    Body = "Here is your text material in pdf format",
                     Attachment = new Attachment(pdfStream, "textMaterial.pdf")
                 });
             }
@@ -62,6 +64,41 @@ namespace BLL.Services
                 pdfStream.Close();
                 writer.Close();
             }
+        }
+
+        private Document CreateDocument(PdfDocument pdf, TextMaterial textMaterial, EmailParameters emailParams)
+        {
+            var document = new Document(pdf);
+
+            if (emailParams.Title != null)
+            {
+                document.Add(new Paragraph($"TITLE: {textMaterial.Title}"));
+            }
+
+            if (emailParams.Category != null)
+            {
+                document.Add(new Paragraph());
+                document.Add(new Paragraph($"CATEGORY: {textMaterial.TextMaterialCategory.Title}"));
+                document.Add(new Paragraph());
+            }
+
+            foreach(var element in HtmlConverter.ConvertToElements(textMaterial.Content))
+            {
+                var temp = (IBlockElement)element;
+                document.Add(temp);
+            }
+
+            if (emailParams.Author != null)
+            {
+                document.Add(new Paragraph($"AUTHOR: {textMaterial.Author.UserName}"));
+            }
+
+            if (emailParams.DatePublished != null)
+            {
+                document.Add(new Paragraph($"DATE PUBLISHED: {textMaterial.DatePublished}"));
+            }
+
+            return document;
         }
     }
 }

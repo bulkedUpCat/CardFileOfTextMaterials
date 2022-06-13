@@ -22,8 +22,8 @@ export class HomePageComponent implements OnInit {
   ngOnInit(): void {
     this.authService.getUserInfo().subscribe( u => {
       if (u){
-        this.userId = u.jti;
-        this.userName = u.sub;
+        this.userId = u.sub;
+        this.userName = u.name;
       }
     });
   }

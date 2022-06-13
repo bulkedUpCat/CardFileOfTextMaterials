@@ -84,7 +84,7 @@ namespace CardFile.Controllers
             {
                 var userId = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
 
-                await _textMaterialService.SendTextMaterialAsPdf(userId, id);
+                await _textMaterialService.SendTextMaterialAsPdf(userId, id, emailParams);
 
                 return Ok();
             }

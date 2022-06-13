@@ -76,7 +76,7 @@ export class TextMaterialService {
     return this.http.post<number>(`${environment.apiUrl}/textMaterials/${id}/reject`,null);
   }
 
-  sendTextMaterialAsPdf(textMaterialId: number, emailParams: EmailParameters){
+  sendTextMaterialAsPdf(textMaterialId: number, emailParams: any){
     var parameters = {};
 
     if (emailParams.title) parameters['title'] = emailParams.title;

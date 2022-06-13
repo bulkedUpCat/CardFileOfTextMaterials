@@ -10,9 +10,6 @@ namespace Core.Models
     public class TextMaterial
     {
         public int Id { get; set; }
-
-        [Required(ErrorMessage = "Title is required")]
-        [MaxLength(100, ErrorMessage = "Max length of a title is 100 characters")]
         public string Title { get; set; }
         public string Content { get; set; }
 

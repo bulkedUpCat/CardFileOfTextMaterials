@@ -7,6 +7,10 @@
     background-color: #FFF;
 }
 
+.print-icon {
+    padding: 5%;
+}
+
 .prop {
     margin-top: 1%;
     padding: .5%;
@@ -57,7 +61,7 @@
         font-size: 1.5em;
     }
     .bottom {
-        grid-template-columns: 20% 70% 10%;
+        grid-template-columns: 25% 50% 25%;
     }
     .btn-approve>button {
         padding: 1%;

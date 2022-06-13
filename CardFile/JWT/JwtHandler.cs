@@ -37,9 +37,9 @@ namespace CardFile.JWT
         {
             var claims = new List<Claim>()
             {
+                new Claim(JwtRegisteredClaimNames.Name, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, user.Id)
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
 
             var userRoles = await _userManager.GetRolesAsync(user);

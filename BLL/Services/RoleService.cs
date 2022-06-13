@@ -22,9 +22,9 @@ namespace BLL.Services
 
         public async Task AssignRoleAsync()
         {
-            var user = await _userManager.FindByIdAsync("ea720218-4041-4848-bc2a-11eca80ee569");
-            var result =  await _roleManager.CreateAsync(new IdentityRole("Manager"));
-            await _userManager.AddToRoleAsync(user, "Manager");
+            var user = await _userManager.FindByNameAsync("admin");
+            var result =  await _roleManager.CreateAsync(new IdentityRole("Admin"));
+            await _userManager.AddToRoleAsync(user, "Admin");
         }
     }
 }

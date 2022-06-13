@@ -171,7 +171,7 @@ namespace BLL.Services
             }
         }
 
-        public async Task SendTextMaterialAsPdf(string userId, int textMaterialId)
+        public async Task SendTextMaterialAsPdf(string userId, int textMaterialId, EmailParameters emailParams)
         {
             if (string.IsNullOrWhiteSpace(userId))
             {
@@ -185,7 +185,7 @@ namespace BLL.Services
                 throw new CardFileException($"User with id {userId} doesn't exist");
             }
 
-            var textMaterial = await _unitOfWork.TextMaterialRepository.GetByIdAsync(textMaterialId);
+            var textMaterial = await _unitOfWork.TextMaterialRepository.GetByIdWithDetailsAsync(textMaterialId);
 
             if (textMaterial == null)
             {
@@ -194,7 +194,7 @@ namespace BLL.Services
 
             try
             {
-                await _emailService.SendTextMaterialAsPdf(user, textMaterial);
+                await _emailService.SendTextMaterialAsPdf(user, textMaterial, emailParams);
             }
             catch (Exception e)
             {
